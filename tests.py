@@ -1,16 +1,23 @@
-from functions.write_file import write_file
-
+from functions.run_python_file import run_python_file
 def test():
-    print("Testing write_file()")
-    result = write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum")
+    print("should print the calculator's usage instructions")
+    result = run_python_file("calculator", "main.py")
     print(result)
 
-    print("Testing write_file() with a file path outside the working directory")
-    result = write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet")
+    print("should run the calculator... which gives a kinda nasty rendered result")
+    result = run_python_file("calculator", "main.py", ["3 + 5"])
     print(result)
 
-    print("Testing write_file() with a file path that shouldn't be allowed")
-    result = write_file("calculator", "/tmp/temp.txt", "this should not be allowed")
+    print("Should run the calculator tests... which should pass")
+    result = run_python_file("calculator", "tests.py")
+    print(result)
+
+    print("this should return an error")
+    result = run_python_file("calculator", "../main.py")
+    print(result)
+
+    print("this should return an error")
+    result = run_python_file("calculator", "nonexistent.py")
     print(result)
 
 

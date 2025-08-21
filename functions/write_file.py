@@ -13,6 +13,7 @@ def write_file(working_directory, file_path, content):
             print(f'File "{file_path}" does not exist. Creating it.')
             os.makedirs(os.path.dirname(target), exist_ok=True)
 
+        # Write the content to the file
         with open(target, "w") as f:
             f.write(content)
             return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
