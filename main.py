@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from functions.get_files_info import schema_get_files_info
-
+from functions.write_file import schema_write_file
+from functions.run_python_file import schema_run_python_file
+from functions.get_file_content import schema_get_file_content
 
 if len(sys.argv)>3:
     print("Too many arguments")
@@ -14,16 +16,22 @@ load_dotenv()
 system_prompt = """
 You are a helpful AI coding agent.
 
-When a user asks a question or makes a request, make a function call plan. You can perform the following operations:
+When a user asks a question or makes a request, make a function call plan according to the provided function schema. You can perform the following operations:
 
 - List files and directories
+- Write content to a file
+- Read content from a file
+- Run a Python script
 
 All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
 """
-
+#Set variables for LLM
 available_functions = types.Tool(
     function_declarations=[
         schema_get_files_info,
+        schema_write_file,
+        schema_get_file_content,
+        schema_run_python_file
     ]
 )
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -33,13 +41,14 @@ messages = [
     types.Content(role="user", parts=[types.Part(text=prompt)]),
 ]
 
+#Get response from LLM
 response = client.models.generate_content(model ="gemini-2.0-flash-001", contents = messages,
                                           config=types.GenerateContentConfig(system_instruction=system_prompt, tools=[available_functions]))
-
+print(response.text)
 if len(response.function_calls) > 0:
     for function_call in response.function_calls:
         print(f"Calling function: {function_call.name}({function_call.args})")
-print(response.text)
+
 if '--verbose' in sys.argv:
     print(f"User prompt: {prompt}")
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
