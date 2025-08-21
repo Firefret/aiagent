@@ -2,6 +2,8 @@ import os
 
 def get_files_info(working_directory, directory="."):
     try:
+
+        # Check if the directory is valid
         path = os.path.join(working_directory, directory)
         absolute_path = os.path.abspath(path)
         if not os.path.isdir(absolute_path):
@@ -11,6 +13,7 @@ def get_files_info(working_directory, directory="."):
             print (f'Error: Cannot list "{directory}" as it is outside the permitted working directory')
             return None
 
+        # List files in the directory
         filelist = os.listdir(absolute_path)
         print(f'Result for {"current directory" if directory == "." else directory}:')
         for filename in filelist:
