@@ -22,4 +22,4 @@ def get_files_info(working_directory, directory="."):
             file_size = os.path.getsize(file_reference)
             print(f'- {filename}: file_size={file_size} bytes, is_dir={is_dir}')
     except Exception as e:
-        print(f'Error: {e}')
+        return f'Error: {e}'

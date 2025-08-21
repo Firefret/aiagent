@@ -7,8 +7,6 @@ def get_file_content(working_directory, file_path):
         # Check if the file exists and is a regular file
         wd = os.path.realpath(os.path.abspath(working_directory))
         target = os.path.realpath(os.path.abspath(os.path.join(working_directory, file_path)))
-        print(f'Working directory: {wd}')
-        print(f'Target file: {target}')
 
         if os.path.commonpath([wd, target]) != wd:
             print(f'Error: Cannot read "{file_path}" as it is outside the permitted working directory')
@@ -26,4 +24,4 @@ def get_file_content(working_directory, file_path):
 
         return content
     except Exception as e:
-        print(f'Error: {e}')
+        return f'Error: {e}'
