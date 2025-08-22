@@ -7,6 +7,7 @@ from functions.get_files_info import *
 from functions.write_file import *
 from functions.run_python_file import *
 from functions.get_file_content import *
+from functions.call_function import *
 
 if len(sys.argv)>3:
     print("Too many arguments")
@@ -34,6 +35,10 @@ available_functions = types.Tool(
         schema_run_python_file
     ]
 )
+if '--verbose' in sys.argv:
+    verbose = True
+else:
+    verbose = False
 api_key = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 prompt = sys.argv[1]
@@ -48,8 +53,14 @@ print(response.text)
 if len(response.function_calls) > 0:
     for function_call in response.function_calls:
         print(f"Calling function: {function_call.name}({function_call.args})")
+        function_response = call_function(function_call)
+        if not function_response.parts[0].function_response.response:
+            raise Exception(f"Error: {function_response.parts[0].function_response.response}")
+        elif verbose:
+            print(f"-> {function_response.parts[0].function_response.response}")
 
-if '--verbose' in sys.argv:
+
+if verbose:
     print(f"User prompt: {prompt}")
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
     print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
