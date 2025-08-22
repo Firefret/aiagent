@@ -31,11 +31,17 @@ def get_files_info(working_directory, directory="."):
 
         # List files in the directory
         filelist = os.listdir(absolute_path)
+        filedict = dict()
         print(f'Result for {"current directory" if directory == "." else directory}:')
         for filename in filelist:
             file_reference = os.path.join(absolute_path, filename)
             is_dir = os.path.isdir(file_reference)
             file_size = os.path.getsize(file_reference)
             print(f'- {filename}: file_size={file_size} bytes, is_dir={is_dir}')
+            filedict[filename] = dict()
+            filedict[filename]["file path"] = file_reference
+            filedict[filename]["file size"] = file_size
+            filedict[filename]["is directory"] = is_dir
+        return str(filedict)
     except Exception as e:
         return f'Error: {e}'
